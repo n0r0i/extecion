@@ -1,18 +1,3 @@
-// --- LÓGICA DO WEB REQUEST (PARA O IFRAME) ---
-function removeSecurityHeaders(responseDetails) {
-  const headers = responseDetails.responseHeaders;
-  for (let i = 0; i < headers.length; i++) {
-    const headerName = headers[i].name.toLowerCase();
-    if (headerName === 'x-frame-options' || headerName === 'content-security-policy') {
-      headers.splice(i, 1); i--; 
-    }
-  }
-  return { responseHeaders: headers };
-}
-browser.webRequest.onHeadersReceived.addListener(
-  removeSecurityHeaders, { urls: ["<all_urls>"] }, ["blocking", "responseHeaders"]
-);
-
 // --- LÓGICA DO ASSISTENTE AI ---
 async function callGoogleAPI(prompt, key, imageData = null) {
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`;

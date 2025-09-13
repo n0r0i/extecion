@@ -1,22 +1,24 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Meu Web Panel Personalizado",
   "version": "2.0.0",
-  "description": "Salve seus sites favoritos para acesso rápido na barra lateral.",
-  
+  "description": "Salve seus sites favoritos para acesso rápido.",
+
   "background": {
-    "scripts": ["src/background.js"]
+    "service_worker": "src/background.js"
   },
 
   "permissions": [
     "storage",
     "tabs",
-    "webRequest",
-    "webRequestBlocking",
-    "<all_urls>",
     "history",
     "browsingData",
-    "scripting"
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
   ],
 
   "content_scripts": [
@@ -26,19 +28,29 @@
     }
   ],
 
-  "sidebar_action": {
+  "action": {
     "default_icon": { "48": "src/icons/48x48.png" },
     "default_title": "Meus Sites",
-    "default_panel": "src/sidebar/sidebar.html"
+    "default_popup": "src/sidebar/sidebar.html"
   },
 
   "icons": { "48": "src/icons/48x48.png" },
 
   "commands": {
-    "_execute_sidebar_action": {
+    "_execute_action": {
       "suggested_key": { "default": "Alt+Shift+S" }
     }
   },
   
-  "content_security_policy": "script-src 'self'; object-src 'self'; connect-src https://generativelanguage.googleapis.com https://api.openai.com https://openrouter.ai;"
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com; object-src 'self'; connect-src https://generativelanguage.googleapis.com https://api.openai.com https://openrouter.ai;"
+  },
+
+  "declarative_net_request" : {
+    "rule_resources" : [{
+      "id": "ruleset_1",
+      "enabled": true,
+      "path": "rules.json"
+    }]
+  }
 }
