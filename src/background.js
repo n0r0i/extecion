@@ -34,7 +34,7 @@ async function callOpenRouterAPI(prompt, key, model, imageData = null) {
     const body = { model: model, messages: [{ role: 'user', content }] };
     const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}`, 'HTTP-Referer': browser.runtime.getURL('sidebar.html'), 'X-Title': 'Multi-Ferramentas Firefox' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}`, 'HTTP-Referer': chrome.runtime.getURL('sidebar.html'), 'X-Title': 'Multi-Ferramentas Firefox' },
         body: JSON.stringify(body)
     });
     const data = await response.json();
@@ -43,7 +43,7 @@ async function callOpenRouterAPI(prompt, key, model, imageData = null) {
 }
 
 // Ouve mensagens tanto do painel lateral quanto dos content scripts
-browser.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message) => {
     // Processa perguntas diretas ou texto vindo do content script
     if (message.command === 'process-text-with-ai') {
         const { text, promptTemplate, imageData } = message;
@@ -51,7 +51,7 @@ browser.runtime.onMessage.addListener((message) => {
 
         (async () => {
             try {
-                const settings = await browser.storage.local.get(['apiKey', 'aiProvider', 'openRouterModel']);
+                const settings = await chrome.storage.local.get(['apiKey', 'aiProvider', 'openRouterModel']);
                 const { apiKey, aiProvider, openRouterModel } = settings;
                 if (!apiKey) { throw new Error("Chave de API não configurada."); }
                 let botResponse;
@@ -62,10 +62,10 @@ browser.runtime.onMessage.addListener((message) => {
                 } else {
                     botResponse = await callGoogleAPI(fullPrompt, apiKey, imageData);
                 }
-                browser.runtime.sendMessage({ command: 'ai-response', data: botResponse });
+                chrome.runtime.sendMessage({ command: 'ai-response', data: botResponse });
             } catch (error) {
                 console.error("Erro no background script ao chamar a API:", error);
-                browser.runtime.sendMessage({ command: 'ai-response-error', error: error.message });
+                chrome.runtime.sendMessage({ command: 'ai-response-error', error: error.message });
             }
         })();
         return true;

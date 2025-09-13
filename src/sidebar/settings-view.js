@@ -23,7 +23,7 @@ function toggleProfileEditMode(isEditing) {
 
 function loadSettings() {
     if (!apiKeyInput || !aiProviderSelect) return;
-    browser.storage.local.get(['profile', 'apiKey', 'aiProvider', 'openRouterModel']).then((data) => {
+    chrome.storage.local.get(['profile', 'apiKey', 'aiProvider', 'openRouterModel']).then((data) => {
         if (data && data.profile) {
             const { name, avatarDataUrl } = data.profile;
             if(profileNameDisplay) profileNameDisplay.textContent = name || 'Visitante';
@@ -40,7 +40,7 @@ function loadSettings() {
         } else {
             openRouterModelContainer.classList.add('hidden');
         }
-        
+
         if (data && data.openRouterModel && openRouterModelSelect) {
             if (!Array.from(openRouterModelSelect.options).some(o => o.value === data.openRouterModel)) {
                 const option = new Option(data.openRouterModel, data.openRouterModel);
@@ -66,7 +66,7 @@ function saveSettings() {
         reader.readAsDataURL(file);
     });
 
-    browser.storage.local.get('profile').then(async (data) => {
+    chrome.storage.local.get('profile').then(async (data) => {
         let currentProfile = data.profile || {};
         let newAvatarDataUrl = currentProfile.avatarDataUrl;
         if (avatarFile) {
@@ -74,10 +74,10 @@ function saveSettings() {
             catch (error) { console.error("Erro ao ler avatar:", error); return; }
         }
         const newProfile = { name: newName, avatarDataUrl: newAvatarDataUrl };
-        
-        browser.storage.local.set({ 
-            profile: newProfile, 
-            apiKey: newApiKey, 
+
+        chrome.storage.local.set({
+            profile: newProfile,
+            apiKey: newApiKey,
             aiProvider: selectedProvider,
             openRouterModel: selectedOpenRouterModel
         }).then(() => {
@@ -104,7 +104,7 @@ async function checkApiKeyAndListModels() {
     if (!apiKeyInput || !modelsListContainer || !aiProviderSelect) return;
     const key = apiKeyInput.value.trim();
     const provider = aiProviderSelect.value;
-    
+
     modelsListContainer.classList.remove('hidden');
     modelsListContainer.classList.remove('success', 'error');
 
@@ -132,14 +132,14 @@ async function checkApiKeyAndListModels() {
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
         if (!response.ok) { throw new Error(data?.error?.message || 'Chave de API inválida ou erro de rede.'); }
-        
+
         let modelNames = [];
         if (provider === 'google' && data.models) {
             modelNames = data.models.filter(m => m.supportedGenerationMethods.includes('generateContent')).map(m => m.name);
         } else if (data.data) {
             modelNames = data.data.map(m => m.id);
         }
-        
+
         if (provider === 'openrouter') {
             const freeModels = modelNames.filter(name => name.includes(':free')).sort();
             if (freeModels.length > 0) {

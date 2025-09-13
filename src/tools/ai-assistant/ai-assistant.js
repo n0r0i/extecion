@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function getAiResponse(prompt, imageData = null) {
         lastUserPrompt = prompt;
         const promptLowerCase = prompt.toLowerCase();
-        
+
         if (promptLowerCase.includes('abra')) {
             const words = promptLowerCase.split(' ');
             const siteWord = words.find(w => w.includes('.') || ['youtube', 'google', 'twitter', 'github'].includes(w));
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (!url.startsWith('http')) { url = 'https://' + url; }
                 try {
                     new URL(url);
-                    browser.tabs.create({ url: url });
+                    chrome.tabs.create({ url: url });
                     addMessage('bot', `Ok, abrindo uma nova aba para: **${url}**`);
                 } catch (error) {
                     addMessage('error', `Não consegui entender "${siteWord}" como uma URL válida.`);
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
-        
+
         const isContextualCommand = promptLowerCase.includes('resuma') || promptLowerCase.includes('explique') || promptLowerCase.includes('traduza');
         if (isContextualCommand) {
             const readingMessage = 'Ok, lendo o conteúdo da página atual...';
@@ -71,13 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingIndicator.innerHTML = '<span></span><span></span><span></span>';
 
             try {
-                const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+                const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
                 if (tabs.length > 0 && tabs[0].id) {
-                    const response = await browser.tabs.sendMessage(tabs[0].id, {
+                    const response = await chrome.tabs.sendMessage(tabs[0].id, {
                         command: 'summarize-page',
-                        prompt: prompt 
+                        prompt: prompt
                     });
-                    
+
                     if (response && response.status === 'failure') {
                         throw new Error(response.reason);
                     }
@@ -90,14 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     addMessage('error', `Erro ao ler a página: ${error.message}`);
                 }
             }
-            return; 
+            return;
         }
-        
+
         const loadingIndicator = addMessage('bot', '');
         loadingIndicator.classList.add('loading');
         loadingIndicator.innerHTML = '<span></span><span></span><span></span>';
-        
-        browser.runtime.sendMessage({
+
+        chrome.runtime.sendMessage({
             command: 'process-text-with-ai',
             text: prompt,
             promptTemplate: '',
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    browser.runtime.onMessage.addListener((message) => {
+    chrome.runtime.onMessage.addListener((message) => {
         const loadingIndicator = document.querySelector('.message.loading');
         if (loadingIndicator) { loadingIndicator.remove(); }
         if (message.command === 'ai-response') {
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             retryButton.addEventListener('click', () => {
                 errorMsgElement.remove();
                 retryButton.remove();
-                getAiResponse(lastUserPrompt, attachedImageBase64); 
+                getAiResponse(lastUserPrompt, attachedImageBase64);
             });
         }
     });
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (removeImageBtn) removeImageBtn.addEventListener('click', resetImageAttachment);
 
-    browser.storage.local.get('aiProvider').then(data => {
+    chrome.storage.local.get('aiProvider').then(data => {
         aiProvider = data.aiProvider || 'google';
         addMessage('bot', `Olá! Usando **${aiProvider}**. Como posso ajudar?`);
     }).catch(() => {

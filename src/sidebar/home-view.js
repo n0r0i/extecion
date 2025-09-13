@@ -20,23 +20,23 @@ let idSendoEditado = null;
 const saveOrder = () => {
     const currentListItems = Array.from(siteList.querySelectorAll('li'));
     const newOrderIds = currentListItems.map(item => item.dataset.id);
-    browser.storage.local.get({ savedSites: [] }).then(data => {
+    chrome.storage.local.get({ savedSites: [] }).then(data => {
         const reorderedSites = newOrderIds.map(id => data.savedSites.find(site => (site.id || site.url) === id)).filter(Boolean);
-        browser.storage.local.set({ savedSites: reorderedSites });
+        chrome.storage.local.set({ savedSites: reorderedSites });
     });
 };
 
 const removeItem = (idToRemove) => {
-    browser.storage.local.get({ savedSites: [], lastOpenedUrl: null }).then(data => {
+    chrome.storage.local.get({ savedSites: [], lastOpenedUrl: null }).then(data => {
         const sites = data.savedSites || [];
         const itemToRemove = sites.find(item => (item.id || item.url) === idToRemove);
         if (!itemToRemove) return;
         if (window.confirm(`Tem certeza que deseja remover "${itemToRemove.name}"?`)) {
             const updatedSites = sites.filter(item => (item.id || item.url) !== idToRemove);
             if (data.lastOpenedUrl === idToRemove) {
-                browser.storage.local.remove('lastOpenedUrl');
+                chrome.storage.local.remove('lastOpenedUrl');
             }
-            browser.storage.local.set({ savedSites: updatedSites }).then(() => {
+            chrome.storage.local.set({ savedSites: updatedSites }).then(() => {
                 window.dispatchEvent(new CustomEvent('sitesChanged'));
             });
         }
@@ -45,10 +45,10 @@ const removeItem = (idToRemove) => {
 
 const renderSavedSites = () => {
     if (!siteList) return;
-    browser.storage.local.get({ savedSites: [], lastOpenedUrl: null }).then((data) => {
+    chrome.storage.local.get({ savedSites: [], lastOpenedUrl: null }).then((data) => {
         const savedSites = data.savedSites || [];
         siteList.innerHTML = '';
-        
+
         if (emptyState && webPanel) {
             const firstClickableItem = savedSites.find(item => item.type !== 'separator');
 
@@ -62,14 +62,14 @@ const renderSavedSites = () => {
                     if (webPanel.src !== data.lastOpenedUrl) webPanel.src = data.lastOpenedUrl;
                 } else {
                     if (webPanel.src !== firstClickableItem.url) webPanel.src = firstClickableItem.url;
-                    browser.storage.local.set({ lastOpenedUrl: firstClickableItem.url });
+                    chrome.storage.local.set({ lastOpenedUrl: firstClickableItem.url });
                 }
             } else {
                 emptyState.style.display = 'flex';
                 webPanel.style.display = 'none';
             }
         }
-        
+
         savedSites.forEach(item => {
             const listItem = document.createElement('li');
             listItem.draggable = true;
@@ -110,7 +110,7 @@ const renderSavedSites = () => {
                     iconElement.title = item.name;
                     iconElement.addEventListener('click', () => {
                         webPanel.src = item.url;
-                        browser.storage.local.set({ lastOpenedUrl: item.url });
+                        chrome.storage.local.set({ lastOpenedUrl: item.url });
                     });
                     listItem.appendChild(iconElement);
                 }
@@ -128,12 +128,12 @@ const openModalInAddMode = async () => {
     editMode = false; idSendoEditado = null;
     if(modalTitle) modalTitle.textContent = 'Adicionar Novo Item';
     if(saveButton) saveButton.textContent = 'Salvar';
-    if(siteNameInput) siteNameInput.value = ''; 
+    if(siteNameInput) siteNameInput.value = '';
     if(siteUrlInput) siteUrlInput.value = '';
     if(isSeparatorCheckbox) isSeparatorCheckbox.checked = false;
     if(urlFieldContainer) urlFieldContainer.style.display = 'flex';
     try {
-        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
         if (tabs[0]) {
             siteNameInput.value = tabs[0].title || '';
             siteUrlInput.value = tabs[0].url || '';
@@ -167,7 +167,7 @@ const handleSave = () => {
     const name = siteNameInput.value.trim(); const url = siteUrlInput.value.trim(); const isSeparator = isSeparatorCheckbox.checked;
     if (!name) { alert('O nome é obrigatório.'); return; }
     if (!isSeparator && !url) { alert('A URL é obrigatória para sites.'); return; }
-    browser.storage.local.get({ savedSites: [] }).then((data) => {
+    chrome.storage.local.get({ savedSites: [] }).then((data) => {
         let newItem;
         if (isSeparator) {
             const id = editMode ? idSendoEditado : 'sep-' + Date.now();
@@ -182,7 +182,7 @@ const handleSave = () => {
         } else {
             updatedSites = [...data.savedSites, newItem];
         }
-        browser.storage.local.set({ savedSites: updatedSites }).then(() => {
+        chrome.storage.local.set({ savedSites: updatedSites }).then(() => {
             window.dispatchEvent(new CustomEvent('sitesChanged'));
             closeModal();
         });
@@ -195,7 +195,7 @@ export function initHomeView() {
     if(cancelButton) cancelButton.addEventListener('click', closeModal);
     if(saveButton) saveButton.addEventListener('click', handleSave);
     if(modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    
+
     window.addEventListener('sitesChanged', renderSavedSites);
     renderSavedSites();
 }

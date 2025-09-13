@@ -3,12 +3,12 @@ import { availableTools } from './tools.js';
 const toolList = document.getElementById('tool-list');
 
 function addToolToHome(tool) {
-    browser.storage.local.get({ savedSites: [] }).then(data => {
+    chrome.storage.local.get({ savedSites: [] }).then(data => {
         const savedSites = data.savedSites || [];
         const alreadyExists = savedSites.some(item => (item.id || item.url) === (tool.id || tool.url));
         if (alreadyExists) return;
         const updatedSites = [...savedSites, tool];
-        browser.storage.local.set({ savedSites: updatedSites }).then(() => {
+        chrome.storage.local.set({ savedSites: updatedSites }).then(() => {
             window.dispatchEvent(new CustomEvent('sitesChanged'));
         });
     });
@@ -16,7 +16,7 @@ function addToolToHome(tool) {
 
 async function renderStore() {
     if (!toolList) return;
-    const { savedSites = [] } = await browser.storage.local.get('savedSites');
+    const { savedSites = [] } = await chrome.storage.local.get('savedSites');
     toolList.innerHTML = '';
     availableTools.forEach(tool => {
         const alreadyAdded = savedSites.some(item => item.id === tool.id);

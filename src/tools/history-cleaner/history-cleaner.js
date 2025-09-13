@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeUnitSelect = document.getElementById('time-unit');
     const tracesRecent = document.getElementById('traces-recent');
     const deleteByTimeBtn = document.getElementById('delete-by-time-btn');
-    
+
     const quickCleanBtn = document.getElementById('quick-clean-btn');
     const feedbackMessage = document.getElementById('feedback-message');
 
@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!query) return;
 
         try {
-            const historyItems = await browser.history.search({ text: query, maxResults: 10000 });
+            const historyItems = await chrome.history.search({ text: query, maxResults: 10000 });
             for (const item of historyItems) {
-                await browser.history.deleteUrl({ url: item.url });
+                await chrome.history.deleteUrl({ url: item.url });
             }
 
             if (tracesKeyword.checked) {
                 // Para apagar "rastros", precisamos extrair os domínios (origins)
                 const origins = [...new Set(historyItems.map(item => new URL(item.url).origin))];
                 if (origins.length > 0) {
-                    await browser.browsingData.remove({ origins }, dataTypes);
+                    await chrome.browsingData.remove({ origins }, dataTypes);
                 }
             }
             showFeedback('Limpeza por palavra-chave concluída!');
@@ -55,15 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let multiplier = 1000 * 60; // Milissegundos em um minuto
         if (unit === 'hours') multiplier *= 60;
         if (unit === 'days') multiplier *= 60 * 24;
-        
+
         const endTime = Date.now();
         const startTime = endTime - (value * multiplier);
 
         try {
-            await browser.history.deleteRange({ startTime, endTime });
+            await chrome.history.deleteRange({ startTime, endTime });
 
             if (tracesRecent.checked) {
-                await browser.browsingData.remove({ since: startTime }, dataTypes);
+                await chrome.browsingData.remove({ since: startTime }, dataTypes);
             }
             showFeedback('Histórico recente apagado!');
         } catch (error) {
@@ -71,25 +71,25 @@ document.addEventListener('DOMContentLoaded', () => {
             showFeedback('Ocorreu um erro.');
         }
     }
-    
+
     // Função 3: Limpeza Rápida
     async function quickClean() {
         try {
-            const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
             if (tabs.length === 0 || !tabs[0].url.startsWith('http')) {
                 showFeedback('Nenhuma aba de site ativa encontrada.');
                 return;
             }
-            
+
             const currentOrigin = new URL(tabs[0].url).origin;
-            await browser.browsingData.remove({ origins: [currentOrigin] }, dataTypes);
+            await chrome.browsingData.remove({ origins: [currentOrigin] }, dataTypes);
             showFeedback(`Rastros de ${currentOrigin} apagados!`);
         } catch (error) {
             console.error('Erro na limpeza rápida:', error);
             showFeedback('Ocorreu um erro.');
         }
     }
-    
+
     // Adiciona os eventos aos botões
     deleteByKeywordBtn.addEventListener('click', deleteByKeyword);
     deleteByTimeBtn.addEventListener('click', deleteByTime);

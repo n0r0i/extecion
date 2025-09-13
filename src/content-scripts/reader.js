@@ -14,7 +14,7 @@ async function getYouTubeTranscript() {
         if (!playerResponse || !playerResponse.captions) {
             throw new Error("Não foi possível encontrar os dados de legenda na página.");
         }
-        
+
         const captionTracks = playerResponse.captions.playerCaptionsTracklistRenderer.captionTracks;
         if (!captionTracks || captionTracks.length === 0) {
             throw new Error("Nenhuma faixa de legenda encontrada nos dados do vídeo.");
@@ -25,7 +25,7 @@ async function getYouTubeTranscript() {
         const transcriptXml = await transcriptResponse.text();
 
         const textSegments = [...transcriptXml.matchAll(/<text[^>]*>(.*?)<\/text>/gis)].map(match => match[1]);
-        
+
         const fullTranscript = textSegments.map(line => {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = line;
@@ -40,7 +40,7 @@ async function getYouTubeTranscript() {
     }
 }
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.command === "summarize-page") {
         (async () => {
             try {
@@ -53,17 +53,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 } else {
                     textContent = getPageText();
                 }
-                
+
                 if (textContent.length < 100) {
                     throw new Error('Não foi possível encontrar conteúdo de texto significativo.');
                 }
 
-                browser.runtime.sendMessage({
+                chrome.runtime.sendMessage({
                     command: 'process-text-with-ai',
                     text: textContent.substring(0, 20000),
                     promptTemplate: message.prompt
                 });
-                
+
                 sendResponse({ status: 'success' });
 
             } catch (error) {
@@ -71,7 +71,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 sendResponse({ status: 'failure', reason: error.message });
             }
         })();
-        
+
         return true;
     }
 });
