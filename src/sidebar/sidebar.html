@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <title>Multi-Ferramentas</title>
+</head>
+<body>
+    <div class="app-container">
+        <nav id="main-nav">
+            <button id="nav-home" class="nav-button" title="Início"><i class="fas fa-home"></i></button>
+            <button id="nav-store" class="nav-button" title="Loja de Ferramentas"><i class="fas fa-store"></i></button>
+            <button id="nav-settings" class="nav-button" title="Configurações"><i class="fas fa-cog"></i></button>
+        </nav>
+
+        <main id="views-container">
+            <div id="view-home" class="view">
+                <header id="control-bar"><ul id="site-list"></ul><button id="add-site-btn" title="Adicionar novo site">+</button></header>
+                <div id="content-area">
+                    <div id="empty-state"><p>Sua lista está vazia.</p><p>Clique no '+' para adicionar seu primeiro site!</p></div>
+                    <iframe id="web-panel" src="about:blank" frameborder="0"></iframe>
+                </div>
+            </div>
+
+            <div id="view-store" class="view">
+                <h2 class="view-title"><i class="fas fa-store"></i> Loja de Ferramentas</h2>
+                <p class="view-subtitle">Adicione novas ferramentas à sua tela Início.</p>
+                <ul id="tool-list"></ul>
+            </div>
+
+            <div id="view-settings" class="view">
+                <div id="profile-display">
+                    <div class="profile-header">
+                        <img src="avatar.png" alt="Avatar" class="profile-avatar" id="profile-avatar-display">
+                        <h2 class="profile-name" id="profile-name-display">Visitante</h2>
+                    </div>
+                    <button id="edit-profile-btn" class="icon-button" title="Editar Perfil"><i class="fas fa-pencil-alt"></i></button>
+                </div>
+                <hr class="separator-line">
+                <div id="profile-edit-form" class="hidden">
+                    <div class="settings-form">
+                        <h3>Personalizar Perfil</h3>
+                        <div class="form-row"><label for="profile-name-input">Nome:</label><input type="text" id="profile-name-input" placeholder="Digite seu nome"></div>
+                        <div class="form-row"><label for="profile-avatar-input">Avatar:</label><input type="file" id="profile-avatar-input" accept="image/*"></div>
+                        <div class="modal-buttons"><button id="cancel-settings-btn" class="cancel-btn">Cancelar</button></div>
+                    </div>
+                    <hr class="separator-line">
+                </div>
+                <div id="api-settings" class="settings-section">
+                    <h3>Assistente AI</h3>
+                    <div class="form-row"><label for="ai-provider-select">Provedor de I.A.:</label><select id="ai-provider-select"><option value="google">Google (Gemini)</option><option value="openai">OpenAI (GPT)</option><option value="openrouter">OpenRouter (Modelos Variados)</option></select></div>
+                    <div id="openrouter-model-container" class="form-row hidden"><label for="openrouter-model-select">Modelo Específico:</label><select id="openrouter-model-select"></select></div>
+                    <div class="form-row"><label for="api-key-input">Sua Chave de API:</label><input type="password" id="api-key-input" placeholder="Cole sua chave do provedor selecionado"><p class="input-description">Sua chave é salva localmente.</p></div>
+                    <div class="modal-buttons">
+                        <button id="check-api-key-btn" class="cancel-btn">Verificar Chave</button>
+                        <button id="save-all-settings-btn" class="save-btn">Salvar Configurações</button>
+                    </div>
+                    <textarea id="models-list-container" class="models-list hidden" readonly></textarea>
+                    <span id="settings-feedback"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="add-site-modal" class="modal-hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">Adicionar Novo Item</h2>
+            <div class="form-row"><input type="checkbox" id="is-separator"><label for="is-separator">É um separador?</label></div>
+            <div class="form-row"><label for="site-name">Nome:</label><input type="text" id="site-name" placeholder="Ex: Google"></div>
+            <div id="url-field-container" class="form-row"><label for="site-url">URL do Site:</label><input type="text" id="site-url" placeholder="https://www.google.com"></div>
+            <div class="modal-buttons"><button id="cancel-btn" class="cancel-btn">Cancelar</button><button id="save-btn" class="save-btn">Salvar</button></div>
+        </div>
+    </div>
+    
+    <script type="module" src="sidebar.js"></script>
+</body>
+</html>

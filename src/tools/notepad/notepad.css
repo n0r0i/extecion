@@ -1,0 +1,44 @@
+/* Define variáveis de cores para consistência com o tema principal */
+:root {
+    --bg-principal: #202124;
+    --texto-principal: #e8eaed;
+    --borda: #5f6368;
+    --destaque-azul: #8ab4f8;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+#notepad-area {
+    flex-grow: 1; /* Faz o textarea ocupar todo o espaço */
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    border: none;
+    padding: 15px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none; /* Impede que o usuário redimensione o campo */
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+/* Estiliza a barra de rolagem para o tema escuro */
+#notepad-area::-webkit-scrollbar {
+    width: 8px;
+}
+#notepad-area::-webkit-scrollbar-track {
+    background: var(--bg-secundario, #2d2e30);
+}
+#notepad-area::-webkit-scrollbar-thumb {
+    background-color: var(--borda);
+    border-radius: 4px;
+}
+
+/* Remove a borda de foco padrão */
+#notepad-area:focus {
+    outline: none;
+}

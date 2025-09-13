@@ -1,0 +1,346 @@
+:root {
+    --bg-principal: #202124; --bg-secundario: #2d2e30; --texto-principal: #e8eaed;
+    --texto-secundario: #9aa0a6; --borda: #5f6368; --destaque-azul: #8ab4f8;
+    --destaque-vermelho: #f28b82; --destaque-verde: #81c995;
+}
+html, body { margin: 0; padding: 0; height: 100vh; background-color: var(--bg-principal); color: var(--texto-principal); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; overflow: hidden; }
+.app-container { display: flex; flex-direction: column; height: 100%; }
+#main-nav { display: flex; background-color: var(--bg-secundario); border-bottom: 1px solid var(--borda); padding: 4px; justify-content: center; gap: 10px; flex-shrink: 0; }
+.nav-button { background: none; border: none; color: var(--texto-secundario); font-size: 18px; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease, color 0.2s ease; }
+.nav-button:hover { color: var(--texto-principal); background-color: rgba(255, 255, 255, 0.1); }
+.nav-button.active { color: var(--destaque-azul); background-color: rgba(138, 180, 248, 0.1); }
+#views-container { flex-grow: 1; position: relative; }
+.view { display: none; height: 100%; width: 100%; flex-direction: column; box-sizing: border-box; animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.view.active { display: flex; }
+#view-home { padding: 0; }
+#control-bar { display: flex; align-items: center; padding: 8px 12px; background-color: var(--bg-secundario); border-bottom: 1px solid var(--borda); flex-shrink: 0; }
+#site-list { list-style: none; margin: 0; padding: 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+#site-list li { position: relative; padding: 4px; }
+.site-favicon { width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: block; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+#site-list li:hover .site-favicon { transform: scale(1.15); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+#add-site-btn { width: 24px; height: 24px; font-size: 18px; border-radius: 4px; border: 1px dashed var(--borda); cursor: pointer; margin-left: auto; background-color: transparent; color: var(--texto-secundario); transition: background-color 0.2s ease, color 0.2s ease; display: flex; justify-content: center; align-items: center; line-height: 1; }
+#add-site-btn:hover { background-color: var(--destaque-azul); color: var(--bg-principal); border-style: solid; }
+.item-controls { display: flex; gap: 5px; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.2s ease-in-out, bottom 0.2s ease-in-out; z-index: 10; pointer-events: none; }
+#site-list li:hover .item-controls { opacity: 1; bottom: -10px; pointer-events: all; }
+.remove-btn, .edit-btn { width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; cursor: pointer; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.4); transition: transform 0.2s ease; }
+.remove-btn:hover, .edit-btn:hover { transform: scale(1.2); }
+.remove-btn { background-color: var(--destaque-vermelho); }
+.edit-btn { background-color: var(--destaque-azul); }
+.list-separator { display: flex; align-items: center; width: 100%; margin: 8px 0; cursor: grab; position: relative; }
+.list-separator hr { flex-grow: 1; border: none; border-top: 1px solid var(--borda); }
+.list-separator span { padding: 0 10px; font-size: 11px; font-weight: bold; color: var(--texto-secundario); text-transform: uppercase; letter-spacing: 0.5px; }
+.list-separator .item-controls { bottom: 50%; transform: translateY(50%); right: 0; left: auto; background: var(--bg-secundario); padding: 4px; border-radius: 12px; }
+#content-area { flex-grow: 1; position: relative; display: flex; }
+#web-panel { width: 100%; height: 100%; border: none; background-color: var(--bg-principal); }
+li.dragging { opacity: 0.4; }
+#empty-state { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; flex-direction: column; text-align: center; color: var(--texto-secundario); font-size: 14px; position: absolute; top: 0; left: 0; }
+#empty-state p { margin: 5px; }
+#view-store, #view-settings {
+    padding: 20px;
+    overflow-y: auto;
+}
+#profile-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Adiciona um espaço entre o perfil e o botão de editar */
+}
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* margin-bottom foi removido pois agora usamos 'gap' no container pai */
+}
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--borda); margin-bottom: 10px; object-fit: cover; }
+.profile-name { margin: 0; font-size: 18px; }
+.separator-line { width: 100%; border: none; border-top: 1px solid var(--borda); margin-bottom: 20px; }
+.icon-button { background: none; border: none; color: var(--texto-secundario); font-size: 14px; cursor: pointer; padding: 5px; border-radius: 50%; width: 32px; height: 32px; transition: background-color 0.2s, color 0.2s; }
+.icon-button:hover { background-color: rgba(255, 255, 255, 0.1); color: var(--texto-principal); }
+.settings-form h3 { margin-top: 0; margin-bottom: 20px; color: var(--texto-principal); border-bottom: 1px solid var(--borda); padding-bottom: 10px; }
+#save-settings-btn { background-color: var(--destaque-verde); color: var(--bg-principal); }
+#settings-feedback { margin-left: 10px; font-size: 12px; color: var(--destaque-verde); opacity: 0; transition: opacity 0.3s ease-in-out; }
+#settings-feedback.visible { opacity: 1; }
+.hidden { display: none !important; }
+#add-site-modal { background-color: rgba(0, 0, 0, 0.7); }
+.modal-hidden { display: none !important; }
+.modal-content { background-color: var(--bg-secundario); padding: 24px; border-radius: 8px; width: 90%; max-width: 400px; border: 1px solid var(--borda); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); }
+.modal-content h2 { margin-top: 0; color: var(--texto-principal); }
+.form-row { margin-bottom: 15px; display: flex; flex-direction: column; }
+.form-row label { margin-bottom: 5px; color: var(--texto-secundario); font-size: 12px; }
+.form-row:has(#is-separator) { flex-direction: row; align-items: center; gap: 5px; }
+.modal-content input { width: 100%; box-sizing: border-box; }
+.modal-content input[type="text"] { background-color: var(--bg-principal); color: var(--texto-principal); border: 1px solid var(--borda); border-radius: 4px; padding: 10px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.modal-content input[type="text"]:focus { outline: none; border-color: var(--destaque-azul); box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.3); }
+.modal-buttons { margin-top: 20px; text-align: right; display: flex; gap: 10px; justify-content: flex-end;}
+.modal-buttons button { border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.2s ease; }
+.save-btn { background-color: var(--destaque-azul); color: var(--bg-principal); }
+.save-btn:hover { background-color: #a3c5f9; }
+.cancel-btn { background-color: transparent; color: var(--texto-secundario); border: 1px solid var(--borda); }
+.cancel-btn:hover { background-color: var(--borda); color: var(--texto-principal); }
+/* (Todo o CSS anterior permanece, com a seguinte adição) */
+/* ... */
+#site-list li { position: relative; padding: 4px; }
+
+/* Ícones dos atalhos salvos (imagens) */
+.site-favicon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* NOVO: Estilo para ícones que são texto/emoji (nossas ferramentas) */
+.tool-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; /* Usamos flexbox para centralizar o emoji */
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--borda);
+    font-size: 16px; /* Tamanho do emoji */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#site-list li:hover .site-favicon,
+#site-list li:hover .tool-icon { /* Aplica o efeito de hover a ambos */
+    transform: scale(1.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tool-icon {
+    width: 24px; height: 24px; border-radius: 4px;
+    cursor: pointer; display: flex;
+    justify-content: center; align-items: center;
+    font-size: 14px; /* Ajustado para ícones de fonte */
+    color: var(--texto-secundario);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+#site-list li:hover .tool-icon {
+    transform: scale(1.15);
+    color: var(--destaque-azul);
+}
+
+/* NOVO: ESTILOS PARA A TELA LOJA */
+.view-title {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: var(--texto-principal);
+}
+
+.view-subtitle {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: var(--texto-secundario);
+    border-bottom: 1px solid var(--borda);
+    padding-bottom: 15px;
+}
+
+#tool-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tool-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.tool-icon-container {
+    font-size: 24px;
+    color: var(--destaque-azul);
+    width: 40px;
+    text-align: center;
+}
+
+.tool-details {
+    flex-grow: 1;
+}
+
+.tool-name {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: var(--texto-principal);
+}
+
+.tool-description {
+    margin: 0;
+    font-size: 13px;
+    color: var(--texto-secundario);
+}
+
+.add-tool-btn {
+    border: 1px solid var(--destaque-azul);
+    background-color: transparent;
+    color: var(--destaque-azul);
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.add-tool-btn:hover:not(:disabled) {
+    background-color: var(--destaque-azul);
+    color: var(--bg-principal);
+}
+
+.add-tool-btn:disabled {
+    border-color: var(--borda);
+    color: var(--texto-secundario);
+    cursor: not-allowed;
+}
+/* ... (todo o CSS anterior) ... */
+
+/* ESTILOS DA TELA CONFIGURAÇÕES */
+.settings-section {
+    margin-top: 20px;
+}
+
+.settings-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--texto-principal);
+    border-bottom: 1px solid var(--borda);
+    padding-bottom: 10px;
+}
+
+/* NOVO: Estilo para a descrição do input */
+.input-description {
+    font-size: 12px;
+    color: var(--texto-secundario);
+    margin: 8px 0 0 0;
+}
+
+.input-description a {
+    color: var(--destaque-azul);
+    text-decoration: none;
+}
+.input-description a:hover {
+    text-decoration: underline;
+}
+
+/* ... (resto do CSS) ... */
+select {
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    border: 1px solid var(--borda);
+    border-radius: 4px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--destaque-azul);
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.3);
+}
+
+/* ... (todo o CSS anterior) ... */
+
+/* NOVO: Estilo para a lista de modelos disponíveis */
+.models-list {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--borda);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--texto-secundario);
+    white-space: pre-wrap; /* Preserva quebras de linha e espaços */
+    word-wrap: break-word; /* Quebra palavras longas */
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.models-list .model-item {
+    padding: 2px 0;
+}
+
+.models-list .model-item.success {
+    color: var(--destaque-verde);
+}
+
+.models-list .model-item.error {
+    color: var(--destaque-vermelho);
+}
+.models-list {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: var(--bg-principal);
+    border: 1px solid var(--borda);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--texto-secundario);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 100px; /* Altura mínima */
+    resize: vertical; /* Permite que o usuário redimensione verticalmente */
+    font-family: monospace; /* Fonte monoespaçada para melhor leitura */
+}
+
+.models-list.success {
+    border-color: var(--destaque-verde);
+    color: var(--destaque-verde);
+}
+
+.models-list.error {
+    border-color: var(--destaque-vermelho);
+    color: var(--destaque-vermelho);
+}
+.chat-input-form {
+    display: flex;
+    align-items: center; /* Alinha os botões com o input */
+    padding: 10px;
+    border-top: 1px solid var(--borda);
+    background-color: var(--bg-secundario);
+}
+/* ... */
+/* NOVO: Estilos para o anexo de imagem */
+.hidden { display: none !important; }
+
+.attach-btn {
+    padding: 8px 12px;
+    font-size: 18px;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.attach-btn:hover { color: var(--destaque-azul); }
+
+#image-preview-container {
+    position: relative;
+    padding: 10px;
+    background-color: var(--bg-secundario);
+    border-top: 1px solid var(--borda);
+}
+#image-preview {
+    max-height: 80px;
+    max-width: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--borda);
+}
+#remove-image-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+}

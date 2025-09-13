@@ -1,0 +1,182 @@
+:root {
+    --bg-principal: #202124;
+    --bg-secundario: #2d2e30;
+    --texto-principal: #e8eaed;
+    --texto-secundario: #9aa0a6;
+    --borda: #5f6368;
+    --destaque-azul: #8ab4f8;
+    --bg-btn: #5f6368; /* Cor de fundo para botões genéricos */
+    --destaque-vermelho: #f28b82;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--bg-principal);
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.message.user {
+    background-color: var(--destaque-azul);
+    color: var(--bg-principal);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot {
+    background-color: var(--bg-secundario);
+    color: var(--texto-principal);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.message.error {
+    background-color: var(--destaque-vermelho);
+    color: var(--bg-principal);
+    align-self: flex-start;
+}
+
+.message.loading span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--texto-secundario);
+    margin: 0 2px;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.message.loading span:nth-child(1) { animation-delay: -0.32s; }
+.message.loading span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
+.chat-input-form {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid var(--borda);
+    background-color: var(--bg-secundario);
+}
+
+#chat-input {
+    flex-grow: 1;
+    background-color: var(--bg-principal);
+    color: var(--texto-principal);
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+#chat-input:focus {
+    outline: none;
+    border-color: var(--destaque-azul);
+}
+
+#send-btn {
+    background: none;
+    border: none;
+    color: var(--destaque-azul);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+.retry-btn {
+    background-color: var(--bg-btn);
+    color: var(--texto-principal);
+    border: 1px solid var(--borda);
+    padding: 8px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    align-self: flex-start;
+    margin-left: 15px;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+    background-color: var(--borda);
+}
+/* ... (todo o CSS anterior) ... */
+.chat-input-form {
+    display: flex;
+    align-items: center; /* Alinha os botões com o input */
+    padding: 10px;
+    border-top: 1px solid var(--borda);
+    background-color: var(--bg-secundario);
+}
+/* ... */
+/* NOVO: Estilos para o anexo de imagem */
+.hidden { display: none !important; }
+
+.attach-btn {
+    padding: 8px 12px;
+    font-size: 18px;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.attach-btn:hover { color: var(--destaque-azul); }
+
+#image-preview-container {
+    position: relative;
+    padding: 10px;
+    background-color: var(--bg-secundario);
+    border-top: 1px solid var(--borda);
+}
+#image-preview {
+    max-height: 80px;
+    max-width: 100%;
+    border-radius: 4px;
+    border: 1px solid var(--borda);
+}
+#remove-image-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    line-height: 20px;
+    text-align: center;
+}
+.message-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--borda);
+}

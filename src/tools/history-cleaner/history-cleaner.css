@@ -1,0 +1,29 @@
+/* (Este é um CSS completo para a nova ferramenta) */
+:root { /* Cores do nosso tema */
+    --bg-principal: #202124; --bg-secundario: #2d2e30; --texto-principal: #e8eaed;
+    --texto-secundario: #9aa0a6; --borda: #5f6368; --destaque-azul: #8ab4f8;
+    --destaque-vermelho: #f28b82;
+}
+body, html { margin: 0; font-family: -apple-system, sans-serif; background-color: var(--bg-principal); color: var(--texto-principal); }
+.container { padding: 20px; display: flex; flex-direction: column; gap: 30px; }
+.tool-section h2 { margin: 0 0 15px 0; font-size: 16px; border-bottom: 1px solid var(--borda); padding-bottom: 10px; }
+input[type="text"], input[type="number"], select {
+    width: 100%; box-sizing: border-box; background-color: var(--bg-secundario); color: var(--texto-principal);
+    border: 1px solid var(--borda); border-radius: 4px; padding: 10px; margin-bottom: 15px;
+}
+.time-row { display: flex; gap: 10px; }
+.time-row input { flex-grow: 1; }
+.time-row select { width: 120px; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--texto-secundario); font-size: 13px; }
+.btn { border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: opacity 0.2s; }
+.btn:hover { opacity: 0.9; }
+.btn.primary { background-color: var(--destaque-azul); color: var(--bg-principal); }
+.btn.danger { background-color: var(--destaque-vermelho); color: var(--bg-principal); }
+#feedback-message { text-align: center; margin-top: 15px; color: var(--destaque-verde); font-size: 14px; height: 20px; transition: opacity 0.3s; }
+/* Estilos para o Toggle Switch */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-btn); transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--destaque-azul); }
+input:checked + .slider:before { transform: translateX(20px); }

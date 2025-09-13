@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="history-cleaner.css">
+    <title>Limpador de Histórico</title>
+</head>
+<body>
+    <div class="container">
+        <section class="tool-section">
+            <h2>Apagar por Palavra-chave</h2>
+            <input type="text" id="keyword-input" placeholder="ex: google.com">
+            <div class="toggle-row">
+                <label for="traces-keyword">Incluir rastros (cookies, cache, etc.)</label>
+                <label class="switch"><input type="checkbox" id="traces-keyword"><span class="slider"></span></label>
+            </div>
+            <button id="delete-by-keyword-btn" class="btn primary">Apagar</button>
+        </section>
+
+        <section class="tool-section">
+            <h2>Apagar Recentes</h2>
+            <div class="time-row">
+                <input type="number" id="time-value" value="10" min="1">
+                <select id="time-unit">
+                    <option value="minutes">Minutos</option>
+                    <option value="hours">Horas</option>
+                    <option value="days">Dias</option>
+                </select>
+            </div>
+            <div class="toggle-row">
+                <label for="traces-recent">Incluir rastros (cookies, cache, etc.)</label>
+                <label class="switch"><input type="checkbox" id="traces-recent"><span class="slider"></span></label>
+            </div>
+            <button id="delete-by-time-btn" class="btn primary">Apagar</button>
+        </section>
+
+        <section class="tool-section">
+            <h2>Limpeza Rápida</h2>
+            <button id="quick-clean-btn" class="btn danger">Apagar rastros do site atual</button>
+        </section>
+
+        <div id="feedback-message"></div>
+    </div>
+    <script src="history-cleaner.js"></script>
+</body>
+</html>
